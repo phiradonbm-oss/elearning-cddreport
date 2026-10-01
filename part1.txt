@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>รายงาน E-Learning พช.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f6f5f2; --surface:#fcfcfb; --surface-2:#f0efec; --border:#e2e0da;
+  --text:#0b0b0b; --text-2:#52514e; --muted:#8a8984; --grid:#e8e6e1;
+  --s1:#2a78d6; --s2:#eb6834; --accent:#1c5cab;
+  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b;
+  --good-bg:#e7f5e7; --warn-bg:#fdf3dc; --serious-bg:#fcebe3; --crit-bg:#fae3e3; --info-bg:#e6effa;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#121211; --surface:#1a1a19; --surface-2:#242422; --border:#33332f;
+    --text:#ffffff; --text-2:#c3c2b7; --muted:#8f8e86; --grid:#2c2c29;
+    --s1:#3987e5; --s2:#d95926; --accent:#86b6ef;
+    --good-bg:#16301a; --warn-bg:#352a10; --serious-bg:#3a2218; --crit-bg:#3a1b1b; --info-bg:#172a42;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#121211; --surface:#1a1a19; --surface-2:#242422; --border:#33332f;
+  --text:#ffffff; --text-2:#c3c2b7; --muted:#8f8e86; --grid:#2c2c29;
+  --s1:#3987e5; --s2:#d95926; --accent:#86b6ef;
+  --good-bg:#16301a; --warn-bg:#352a10; --serious-bg:#3a2218; --crit-bg:#3a1b1b; --info-bg:#172a42;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Sarabun",system-ui,sans-serif;font-size:15px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 16px 60px}
+header.top{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between;margin-bottom:14px}
+h1{font-size:22px;margin:0;font-weight:700}
+.sub{color:var(--text-2);font-size:14px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button,.btn,select{font:inherit;font-size:14px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:8px;padding:7px 12px;cursor:pointer}
+button:hover,.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+:root[data-theme="dark"] .btn.primary{color:#0b0b0b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.primary{color:#0b0b0b}}
+nav.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:18px;overflow-x:auto}
+nav.tabs button{border:none;background:none;border-bottom:2px solid transparent;border-radius:0;padding:10px 14px;color:var(--text-2);white-space:nowrap}
+nav.tabs button.on{color:var(--text);border-bottom-color:var(--accent);font-weight:600}
+.panel{display:none}.panel.on{display:block}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.row label{color:var(--text-2);font-size:14px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+.kpi .l{color:var(--text-2);font-size:13px}
+.kpi .v{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.25}
+.kpi .d{font-size:13px;color:var(--text-2)}
+.up{color:var(--good)}.down{color:var(--crit)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px}
+.card h2{font-size:17px;margin:0 0 2px}
+.card .hint{color:var(--text-2);font-size:13px;margin:0 0 10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:820px){.grid2{grid-template-columns:1fr}}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--text-2);margin-bottom:6px;flex-wrap:wrap}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{fill:var(--text-2);font-family:inherit;font-size:12px}
+.tip{position:fixed;pointer-events:none;background:var(--surface);border:1px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,.15);border-radius:8px;padding:8px 10px;font-size:13px;z-index:50;display:none;max-width:300px}
+.tip b{display:block;margin-bottom:2px}
+.tip .sw{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--grid);text-align:left;vertical-align:middle}
+th{color:var(--text-2);font-weight:600;font-size:13px;cursor:pointer;user-select:none;white-space:nowrap;background:var(--surface)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tblwrap{overflow-x:auto}
+.bar{height:8px;background:var(--s1);border-radius:0 4px 4px 0;min-width:1px}
+.barcell{width:120px}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:2px 8px;border-radius:99px;white-space:nowrap;color:var(--text)}
+.b-good{background:var(--good-bg)}.b-warn{background:var(--warn-bg)}.b-serious{background:var(--serious-bg)}.b-crit{background:var(--crit-bg)}.b-info{background:var(--info-bg)}.b-none{background:var(--surface-2)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.analysis h3{font-size:15px;margin:14px 0 4px}
+.analysis h3:first-child{margin-top:0}
+.analysis ul{margin:0;padding-left:20px}
+.analysis li{margin:3px 0}
+.alert{border-left:4px solid var(--crit);background:var(--crit-bg);padding:10px 12px;border-radius:6px;margin-bottom:12px;font-size:14px}
+.alert.warn{border-color:var(--warn);background:var(--warn-bg)}
+.note{font-size:13px;color:var(--muted)}
+.quad-legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:10px;font-size:13px}
+.quad-legend div{background:var(--surface-2);border-radius:8px;padding:8px 10px}
+.howto ol li{margin:6px 0}
+.print-only{display:none}
+#dropzone.drag{outline:2px dashed var(--accent);outline-offset:4px}
+@media print{
+  body{background:#fff;color:#000;font-size:12.5px}
+  header.top .btns,nav.tabs,.row,.noprint{display:none!important}
+  .panel{display:none!important}
+  #p-month{display:block!important}
+  .card,.kpi{border:1px solid #ccc;break-inside:avoid}
+  .print-only{display:block}
+  .wrap{padding:0}
+  .tblwrap{overflow:visible}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="dropzone">
+<header class="top">
+  <div>
+    <h1>ระบบรายงานผลการเข้าใช้งาน E-Learning</h1>
+    <div class="sub">กรมการพัฒนาชุมชน · kmlearning.cdd.go.th · <span id="srcInfo"></span></div>
+  </div>
+  <div class="btns">
+    <select id="srcSel" title="เลือกแหล่งข้อมูล"></select>
+    <label class="btn primary" title="ไฟล์ .json ที่ดึงจาก CMS หรือไฟล์ Excel รายงานรายเดือน">📂 นำเข้าข้อมูล<input id="file" type="file" accept=".json,.xlsx,.xls" hidden></label>
+    <button id="btnTheme" title="สลับโหมดสว่าง/มืด">◐</button>
+  </div>
+</header>
+<nav class="tabs">
+  <button data-tab="overview" class="on">ภาพรวม</button>
+  <button data-tab="month">วิเคราะห์รายเดือน</button>
+  <button data-tab="lesson">รายบทเรียน</button>
+  <button data-tab="howto">วิธีใช้งาน</button>
+</nav>
+
+<!-- ============ OVERVIEW ============ -->
+<section class="panel on" id="p-overview">
+  <div class="row">
+    <label for="fySel">ช่วงข้อมูล</label>
+    <select id="fySel"></select>
+  </div>
+  <div class="kpis" id="ovKpis"></div>
+  <div class="card">
+    <h2>แนวโน้มรายเดือน</h2>
+    <p class="hint">จำนวนผู้สมัครเรียนและผู้เรียนจบหลักสูตรในแต่ละเดือน (คน) · ชี้ที่จุดเพื่อดูตัวเลข · คลิกเพื่อเปิดการวิเคราะห์เดือนนั้น</p>
+    <div class="legend"><span><i style="background:var(--s1)"></i>ผู้สมัครเรียน</span><span><i style="background:var(--s2)"></i>ผู้เรียนจบ</span></div>
+    <div id="chTrend"></div>
+  </div>
+  <div class="card">
+    <h2>อัตราการเรียนจบรายเดือน (%)</h2>
+    <p class="hint">ผู้เรียนจบ ÷ ผู้สมัครเรียน ในเดือนเดียวกัน · เส้นประ = ค่าเฉลี่ยของช่วงข้อมูล</p>
+    <div id="chRate"></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h2>10 บทเรียนยอดนิยม</h2><p class="hint">ผู้สมัครเรียนรวมในช่วงข้อมูลที่เลือก</p><div id="chTop"></div></div>
+    <div class="card"><h2>10 บทเรียนที่มีผู้เรียนน้อยที่สุด</h2><p class="hint">ผู้สมัครเรียนรวมในช่วงข้อมูลที่เลือก</p><div id="chBottom"></div></div>
+  </div>
+  <div class="card">
+    <h2>แผนภาพจัดกลุ่มบทเรียน (ความนิยม × อัตราเรียนจบ)</h2>
+    <p class="hint">แกนนอน = ผู้สมัครเรียนรวม · แกนตั้ง = อัตราเรียนจบ · เส้นประ = ค่ามัธยฐาน ใช้แบ่ง 4 กลุ่มเพื่อตัดสินใจปรับบทเรียน</p>
+    <div id="chQuad"></div>
+    <div class="quad-legend">
+      <div><b>⭐ ต้นแบบ</b> — นิยมมาก จบสูง: ใช้เป็นแม่แบบผลิตเนื้อหาใหม่ แนะนำในจดหมายข่าว</div>
+      <div><b>🛠 ปรับเนื้อหา</b> — นิยมมาก จบต่ำ: ทบทวนความยาว รูปแบบสื่อ ความซับซ้อน</div>
+      <div><b>📣 เพิ่มการประชาสัมพันธ์</b> — นิยมน้อย จบสูง: เนื้อหาดีแต่คนยังไม่รู้จัก</div>
+      <div><b>🔍 ทบทวนทั้งบทเรียน</b> — นิยมน้อย จบต่ำ: พิจารณาปรับปรุงใหญ่หรือรวมกับบทอื่น</div>
+    </div>
+  </div>
+  <div class="card" id="courseSumCard" style="display:none">
+    <h2>สรุปสะสมทุกหลักสูตร (จากระบบ CMS)</h2>
+    <p class="hint">ยอดสะสมตั้งแต่เปิดระบบ ณ วันที่ดึงข้อมูล · “การดู/คน” = จำนวนครั้งที่เปิดดูเนื้อหา ÷ ผู้เรียน (สูง = ผู้เรียนกลับมาดูซ้ำหรือมีเนื้อหาหลายตอน) · คลิกหัวตารางเพื่อเรียง</p>
+    <div class="tblwrap"><table id="courseSum"></table></div>
+  </div>
+</section>
+
+<!-- ============ MONTH ============ -->
+<section class="panel" id="p-month">
+  <div class="row">
+    <button id="mPrev" aria-label="เดือนก่อน">‹</button>
+    <select id="mSel"></select>
+    <button id="mNext" aria-label="เดือนถัดไป">›</button>
+    <span style="flex:1"></span>
+    <button id="btnCsv">⬇ ส่งออกตาราง (Excel/CSV)</button>
+    <button id="btnPrint">🖨 พิมพ์ / บันทึก PDF</button>
+  </div>
+  <div class="print-only">
+    <h2 style="margin:0">รายงานผลการเข้าใช้งานระบบการเรียนรู้ออนไลน์ (E-Learning) กรมการพัฒนาชุมชน</h2>
+    <div id="printTitle" style="margin-bottom:10px"></div>
+  </div>
+  <div id="mAlerts"></div>
+  <div id="mNote" class="note" style="margin:-4px 0 12px"></div>
+  <div class="kpis" id="mKpis"></div>
+  <div class="card analysis" id="mAnalysis"></div>
+  <div class="card">
+    <h2>ผลรายบทเรียน</h2>
+    <p class="hint noprint">คลิกหัวตารางเพื่อเรียงลำดับ · คลิกชื่อบทเรียนเพื่อดูแนวโน้ม</p>
+    <div class="tblwrap"><table id="mTable"></table></div>
+    <p class="note">เกณฑ์สถานะ: ⭐ ต้นแบบ = ผู้สมัครอยู่ในกลุ่ม 25% บนและเรียนจบ ≥ 80% · ⚠ เฝ้าระวัง = เรียนจบ 60–79% · ⛔ ต้องปรับปรุง = เรียนจบ &lt; 60% · ○ ไม่มีผู้เรียน = 0 คน · บทเรียนที่มีผู้สมัครน้อยกว่า 5 คนไม่จัดสถานะอัตราเรียนจบ (ข้อมูลน้อยเกินไป)</p>
+  </div>
+</section>
+
+<!-- ============ LESSON ============ -->
+<section class="panel" id="p-lesson">
+  <div class="row"><label for="lSel">บทเรียน</label><select id="lSel" style="max-width:100%"></select></div>
+  <div class="kpis" id="lKpis"></div>
+  <div class="card">
+    <h2 id="lTitle">แนวโน้มรายเดือน</h2>
+    <div class="legend"><span><i style="background:var(--s1)"></i>ผู้สมัครเรียน</span><span><i style="background:var(--s2)"></i>ผู้เรียนจบ</span></div>
+    <div id="chLesson"></div>
+  </div>
+  <div class="card analysis" id="lAnalysis"></div>
+  <div class="card">
+    <h2>ตารางข้อมูลรายเดือน</h2>
+    <div class="tblwrap"><table id="lTable"></table></div
