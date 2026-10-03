@@ -51,9 +51,11 @@ nav.tabs button.on{color:var(--text);border-bottom-color:var(--accent);font-weig
 .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
 .row label{color:var(--text-2);font-size:14px}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:16px}
+#ovKpis{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
 .kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
 .kpi .l{color:var(--text-2);font-size:13px}
 .kpi .v{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.25}
+.kpi .v .u{font-size:14px;font-weight:500;color:var(--text-2);margin-left:6px}
 .kpi .d{font-size:13px;color:var(--text-2)}
 .up{color:var(--good)}.down{color:var(--crit)}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px}
@@ -77,6 +79,13 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .barcell{width:120px}
 .badge{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:2px 8px;border-radius:99px;white-space:nowrap;color:var(--text)}
 .b-good{background:var(--good-bg)}.b-warn{background:var(--warn-bg)}.b-serious{background:var(--serious-bg)}.b-crit{background:var(--crit-bg)}.b-info{background:var(--info-bg)}.b-none{background:var(--surface-2)}
+/*L*/.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--border);background:var(--surface);border-radius:99px;padding:5px 12px;font-size:14px;cursor:pointer}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.chip .c{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
+#pplSearch{font:inherit;font-size:14px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:8px;padding:7px 12px;min-width:0;flex:1 1 220px}
+.privacy{border-left:4px solid var(--warn);background:var(--warn-bg);padding:10px 12px;border-radius:6px;font-size:14px;margin-bottom:14px}
+/*/L*/
 .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
 .analysis h3{font-size:15px;margin:14px 0 4px}
 .analysis h3:first-child{margin-top:0}
@@ -119,7 +128,8 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
   <button data-tab="overview" class="on">ภาพรวม</button>
   <button data-tab="month">วิเคราะห์รายเดือน</button>
   <button data-tab="lesson">รายบทเรียน</button>
-  <button data-tab="howto">วิธีใช้งาน</button>
+<!--L-->  <button data-tab="people">รายชื่อผู้เรียน</button>
+<!--/L-->  <button data-tab="howto">วิธีใช้งาน</button>
 </nav>
 
 <!-- ============ OVERVIEW ============ -->
@@ -204,6 +214,44 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
   </div>
 </section>
 
+<!--L-->
+<!-- ============ PEOPLE ============ -->
+<section class="panel" id="p-people">
+  <div class="privacy">🔒 <b>ข้อมูลส่วนบุคคล</b> ใช้ภายในเพื่อติดตามผู้เรียนเท่านั้น ระบบไม่บันทึกรายชื่อไว้ในเบราว์เซอร์ ปิดหน้านี้แล้วรายชื่อจะหายไป ต้องนำเข้าใหม่ · ไฟล์รายชื่อที่ดาวน์โหลดหรือส่งออก ควรเก็บและส่งต่อตามแนวปฏิบัติ PDPA ของหน่วยงาน</div>
+  <div class="card" id="pplEmpty">
+    <h2>ดึงรายชื่อผู้เรียนจากระบบ CMS</h2>
+    <ol>
+      <li><b>ติดตั้งครั้งเดียว:</b> ลากปุ่มนี้ไปวางบนแถบบุ๊กมาร์กของ Chrome →
+        <a id="bmk2" class="btn primary" style="text-decoration:none;display:inline-block;cursor:grab" title="ลากไปวางบนแถบบุ๊กมาร์ก">👥 ดึงรายชื่อผู้เรียน</a></li>
+      <li>เข้าสู่ระบบจัดการ <b>kmlearning.cdd.go.th/cms</b> แล้วเปิดหน้า <b>DashBoard</b></li>
+      <li>คลิกบุ๊กมาร์ก <b>👥 ดึงรายชื่อผู้เรียน</b> จะมีกล่องแสดงความคืบหน้ามุมขวาบน ใช้เวลาประมาณ 10–20 นาที (ดึงทีละหลักสูตร) ห้ามปิดแท็บระหว่างดึง เสร็จแล้วจะดาวน์โหลดไฟล์ <code>elearning-learners-วันที่.json</code></li>
+      <li>กลับมาหน้านี้ กด <b>📂 นำเข้าข้อมูล</b> แล้วเลือกไฟล์นั้น</li>
+    </ol>
+    <p class="note">ข้อมูลที่ได้: ชื่อ นามสกุล อีเมล หลักสูตร ความคืบหน้า (%) วันที่เริ่มเรียน และวันที่เรียนจบ · ระบบ CMS ไม่มีข้อมูลสังกัดในรายงาน จึงยังแสดงสังกัดไม่ได้</p>
+  </div>
+  <div id="pplBody" hidden>
+    <div class="row">
+      <label for="pplCourse">หลักสูตร</label>
+      <select id="pplCourse" style="max-width:100%"></select>
+      <input id="pplSearch" type="search" placeholder="ค้นหาชื่อ นามสกุล หรืออีเมล">
+    </div>
+    <div class="row">
+      <div class="chips" id="pplChips"></div>
+      <span style="flex:1"></span>
+      <button id="pplExport">⬇ ส่งออกรายชื่อที่แสดง (CSV)</button>
+      <button id="pplClear">ล้างรายชื่อ</button>
+    </div>
+    <div class="kpis" id="pplKpis"></div>
+    <div class="card">
+      <h2 id="pplTitle">รายชื่อ</h2>
+      <p class="hint" id="pplSrc"></p>
+      <div class="tblwrap"><table id="pplTable"></table></div>
+      <p class="note" id="pplMore"></p>
+    </div>
+  </div>
+</section>
+<!--/L-->
+
 <!-- ============ HOWTO ============ -->
 <section class="panel howto" id="p-howto">
   <div class="card">
@@ -258,6 +306,69 @@ const C=[];for(const o of [...sel.options].filter(o=>o.value)){const j=JSON.pars
 C.push({id:+o.value,name,done:d['จบหลักสูตร']||0,notdone:d['ยังไม่จบหลักสูตร']||0,...(V[N(name)]||{}),m:Object.fromEntries((j[1]||[]).map(x=>[x.summarymonth,[+x.summarycount,+x.summarycountcomplet]]))});}
 const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({source:'kmlearning-cms',fetchedAt:new Date().toISOString(),courses:C})],{type:'application/json'}));a.download='elearning-cms-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();
 alert('ดึงข้อมูล '+C.length+' หลักสูตรเรียบร้อย นำไฟล์ที่ดาวน์โหลดไปกด “นำเข้าข้อมูล” ในหน้ารายงาน');}catch(e){alert('ดึงข้อมูลไม่สำเร็จ: '+e.message);}})()`;
+/*L*/
+const BOOKMARKLET2 = `(async()=>{if(!/kmlearning\\.cdd\\.go\\.th$/.test(location.hostname)){alert('กรุณาเปิดหน้า DashBoard ของระบบจัดการ kmlearning.cdd.go.th/cms ก่อน');return;}
+const box=document.createElement('div');box.style.cssText='position:fixed;top:12px;right:12px;z-index:99999;max-width:360px;background:#1c5cab;color:#fff;padding:12px 16px;border-radius:10px;font:15px/1.5 sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.3)';document.body.appendChild(box);const say=s=>{box.textContent=s;};
+try{const P=h=>new DOMParser().parseFromString(h,'text/html');const G=u=>fetch(u,{credentials:'include'}).then(r=>r.text());
+say('กำลังโหลดรายการหลักสูตร...');let sel=document.querySelector('#stmcoursessearch-id');if(!sel)sel=P(await G('/cms/videomanager/default/dashboard')).querySelector('#stmcoursessearch-id');
+if(!sel){say('ไม่พบรายการหลักสูตร กรุณาเข้าสู่ระบบก่อน');return;}
+const opts=[...sel.options].filter(o=>o.value);const rows=[];let k=0;
+for(const o of opts){k++;const name=o.text.replace(/\\s*\\(\\d+\\)\\s*$/,'').trim();say('กำลังดึงรายชื่อ '+k+'/'+opts.length+' : '+name.slice(0,45)+' (ห้ามปิดแท็บ)');
+const q='StmLmsUserCoursesSearch%5Bcourse_id%5D='+o.value+'&StmLmsUserCoursesSearch%5Bstart_time_start%5D=2020-01-01&StmLmsUserCoursesSearch%5Bstart_time_end%5D=2030-12-31&_toga654c069=all';
+const d=P(await G('/cms/videomanager/report/stm-user-course?'+q));
+const H=[...d.querySelectorAll('table thead th')].map(x=>x.textContent.trim());const ix=s=>H.findIndex(h=>h.indexOf(s)>=0);
+const iF=ix('ชื่อ'),iL=ix('นามสกุล'),iE=ix('อีเมล'),iP=ix('Progress'),iS=ix('เวลาเริ่ม'),iD=ix('เวลาสิ้นสุด');
+d.querySelectorAll('table tbody tr').forEach(tr=>{const c=[...tr.children].map(x=>x.textContent.trim().replace(/\\s+/g,' '));if(c.length<6||!/^\\d+$/.test(c[0]))return;rows.push([name,c[iF]||'',c[iL]||'',c[iE]||'',parseFloat(c[iP])||0,c[iS]||'',c[iD]||'']);});}
+const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({source:'kmlearning-cms-learners',fetchedAt:new Date().toISOString(),rows})],{type:'application/json'}));a.download='elearning-learners-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();
+say('เสร็จแล้ว '+rows.length+' รายการ จาก '+opts.length+' หลักสูตร นำไฟล์ที่ดาวน์โหลดไปกด “นำเข้าข้อมูล” ในระบบรายงาน');setTimeout(()=>box.remove(),20000);}catch(e){say('ดึงข้อมูลไม่สำเร็จ: '+e.message);}})()`;
+let PPL=null; const pst={course:'all',status:'all',q:''};
+const PST={done:'เรียนจบ',notdone:'ยังไม่จบ',never:'ยังไม่เริ่มเรียน'};
+const stOf=p=>p>=100?'done':p<=0?'never':'notdone';
+function loadLearners(j){
+  if(!Array.isArray(j.rows)) throw new Error('ไม่ใช่ไฟล์รายชื่อผู้เรียน');
+  PPL={fetchedAt:j.fetchedAt,rows:j.rows.map(r=>({course:r[0],fn:r[1],ln:r[2],email:r[3],p:+r[4]||0,start:r[5],end:r[6],st:stOf(+r[4]||0)}))};
+  pst.course='all';pst.status='all';pst.q='';$('#pplSearch').value='';
+  const cs=[...new Set(PPL.rows.map(r=>r.course))].sort((a,b)=>a.localeCompare(b,'th'));
+  $('#pplCourse').innerHTML='<option value="all">ทุกหลักสูตร</option>'+cs.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+  showTab('people');
+}
+function pplFiltered(ignoreStatus){
+  const q=pst.q.trim().toLowerCase();
+  return PPL.rows.filter(r=>(pst.course==='all'||r.course===pst.course)&&(ignoreStatus||pst.status==='all'||r.st===pst.status)&&(!q||(r.fn+' '+r.ln+' '+r.email).toLowerCase().includes(q)));
+}
+function renderPeople(){
+  const has=!!PPL; $('#pplEmpty').hidden=has; $('#pplBody').hidden=!has; if(!has) return;
+  const base=pplFiltered(true), cnt={all:base.length,done:0,notdone:0,never:0}; base.forEach(r=>cnt[r.st]++);
+  $('#pplChips').innerHTML=[['all','ทั้งหมด'],['done','✓ '+PST.done],['notdone','◐ '+PST.notdone],['never','○ '+PST.never]].map(([k,l])=>`<button class="chip${pst.status===k?' on':''}" data-st="${k}">${l}<span class="c">${fmt(cnt[k])}</span></button>`).join('');
+  $('#pplChips').querySelectorAll('button').forEach(b=>b.onclick=()=>{pst.status=b.dataset.st;renderPeople();});
+  const uniq=new Set(base.map(r=>r.email.toLowerCase())).size;
+  $('#pplKpis').innerHTML=`
+    <div class="kpi"><div class="l">รายการลงทะเบียน</div><div class="v">${fmt(cnt.all)}<span class="u">รายการ</span></div><div class="d">ผู้เรียนไม่ซ้ำ ${fmt(uniq)} คน (นับจากอีเมล)</div></div>
+    <div class="kpi"><div class="l">เรียนจบ</div><div class="v">${fmt(cnt.done)}<span class="u">รายการ</span></div><div class="d">${p1(pct(cnt.done,cnt.all))}</div></div>
+    <div class="kpi"><div class="l">ยังไม่จบ (เรียนไปบางส่วน)</div><div class="v">${fmt(cnt.notdone)}<span class="u">รายการ</span></div><div class="d">${p1(pct(cnt.notdone,cnt.all))}</div></div>
+    <div class="kpi"><div class="l">ยังไม่เริ่มเรียน (0%)</div><div class="v">${fmt(cnt.never)}<span class="u">รายการ</span></div><div class="d">${p1(pct(cnt.never,cnt.all))}</div></div>`;
+  const rows=pplFiltered(false).sort((a,b)=>a.st===b.st?(a.course.localeCompare(b.course,'th')||a.fn.localeCompare(b.fn,'th')):(a.st<b.st?-1:1));
+  $('#pplTitle').textContent=(pst.status==='all'?'รายชื่อทั้งหมด':'รายชื่อผู้ที่'+PST[pst.status])+(pst.course==='all'?'':' · '+pst.course);
+  $('#pplSrc').textContent='ดึงจากระบบ CMS เมื่อ '+new Date(PPL.fetchedAt).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'});
+  const LIM=500, show=rows.slice(0,LIM);
+  const badge={done:'b-good',notdone:'b-warn',never:'b-none'};
+  $('#pplTable').innerHTML=`<thead><tr><th>#</th><th>ชื่อ</th><th>นามสกุล</th><th>อีเมล</th><th>หลักสูตร</th><th class="n">ความคืบหน้า</th><th>สถานะ</th><th>เริ่มเรียน</th><th>เรียนจบ</th></tr></thead><tbody>`+
+    show.map((r,k)=>`<tr><td class="n">${k+1}</td><td>${esc(r.fn)}</td><td>${esc(r.ln)}</td><td>${esc(r.email)}</td><td>${esc(r.course)}</td><td class="n">${r.p}%</td><td><span class="badge ${badge[r.st]}">${PST[r.st]}</span></td><td>${esc(r.start)}</td><td>${esc(r.end)}</td></tr>`).join('')+'</tbody>';
+  $('#pplMore').textContent=rows.length>LIM?`แสดง ${fmt(LIM)} รายการแรกจาก ${fmt(rows.length)} รายการ · กดส่งออก CSV เพื่อดูครบทุกรายการ`:`${fmt(rows.length)} รายการ`;
+}
+function exportPeople(){
+  if(!PPL) return; const rows=pplFiltered(false);
+  const q=s=>'"'+String(s).replace(/"/g,'""')+'"';
+  const lines=[['ชื่อ','นามสกุล','อีเมล','หลักสูตร','ความคืบหน้า (%)','สถานะ','เริ่มเรียน','เรียนจบ']].concat(rows.map(r=>[r.fn,r.ln,r.email,r.course,r.p,PST[r.st],r.start,r.end]));
+  const name=`รายชื่อผู้เรียน_${pst.status==='all'?'ทั้งหมด':PST[pst.status]}${pst.course==='all'?'':'_'+pst.course.slice(0,30)}.csv`;
+  if(window.top!==window){
+    const txt=lines.map(l=>l.join('\t')).join('\n');
+    navigator.clipboard.writeText(txt).then(()=>alert('คัดลอก '+fmt(rows.length)+' รายการแล้ว วางใน Excel ได้เลย (หน้านี้ดาวน์โหลดไฟล์ไม่ได้)'),()=>alert('คัดลอกไม่สำเร็จ ให้ใช้ไฟล์ระบบรายงานบนเครื่องแทน'));
+    return;
+  }
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+lines.map(l=>l.map(q).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}));a.download=name;a.click();
+}
+/*/L*/
 const TH_M = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 const TH_S = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 const LS_KEY = 'elearn-report-data-v1';
@@ -373,7 +484,9 @@ function handleFile(f){
   rd.onload=e=>{
     try{
       let ds;
-      if(isJson){ds=cmsToDataset(JSON.parse(e.target.result));}
+      if(isJson){const j=JSON.parse(e.target.result);
+/*L*/        if(j.source==='kmlearning-cms-learners'){loadLearners(j);alert('นำเข้ารายชื่อสำเร็จ '+fmt(j.rows.length)+' รายการ');return;}
+/*/L*/        ds=cmsToDataset(j);}
       else{
         const raw=parseWorkbook(XLSX.read(e.target.result,{type:'array'}));
         if(!raw.length){alert('ไม่พบชีตรายเดือนในไฟล์นี้ (ต้องมีข้อความ “ประจำเดือน ... 25xx”)');return;}
@@ -441,6 +554,7 @@ function lineChart(host,labels,series,opt={}){
   for(let k=0;k<=4;k++){const v=ymax*k/4,y=Y(v);
     svgEl('line',{x1:m.l,x2:m.l+iw,y1:y,y2:y,stroke:'var(--grid)','stroke-width':1},svg);
     const t=svgEl('text',{x:m.l-8,y:y+4,'text-anchor':'end'},svg);t.textContent=opt.pctAxis?v+'%':fmt(v);}
+  if(!opt.pctAxis){const ut=svgEl('text',{x:m.l-8,y:m.t-4,'text-anchor':'end'},svg);ut.textContent='(คน)';}
   const step=Math.ceil(n/(W<600?6:12));
   labels.forEach((l,i)=>{if(i%step&&i!==n-1)return;const t=svgEl('text',{x:X(i),y:H-10,'text-anchor':'middle'},svg);t.textContent=l;});
   if(opt.refLine!=null){const y=Y(opt.refLine);svgEl('line',{x1:m.l,x2:m.l+iw,y1:y,y2:y,stroke:'var(--muted)','stroke-dasharray':'4 4'},svg);
@@ -456,7 +570,7 @@ function lineChart(host,labels,series,opt={}){
   const hit=svgEl('rect',{x:m.l-10,y:m.t,width:iw+20,height:ih,fill:'transparent',style:opt.onClick?'cursor:pointer':''},svg);
   const idxAt=ev=>{const r=svg.getBoundingClientRect();const px=(ev.clientX-r.left)*W/r.width;return Math.max(0,Math.min(n-1,Math.round((px-m.l)/(n<=1?1:iw/(n-1)))));};
   hit.addEventListener('mousemove',ev=>{const i=idxAt(ev);cross.setAttribute('x1',X(i));cross.setAttribute('x2',X(i));cross.setAttribute('visibility','visible');
-    showTip(ev,`<b>${opt.tipLabels?opt.tipLabels[i]:labels[i]}</b>`+series.map(s=>`<div><span class="sw" style="background:${s.color}"></span>${s.name}: <b style="display:inline">${s.data[i]==null?'–':(opt.pctAxis?p1(s.data[i]):fmt(s.data[i]))}</b></div>`).join('')+(opt.tipExtra?opt.tipExtra(i):''));});
+    showTip(ev,`<b>${opt.tipLabels?opt.tipLabels[i]:labels[i]}</b>`+series.map(s=>`<div><span class="sw" style="background:${s.color}"></span>${s.name}: <b style="display:inline">${s.data[i]==null?'–':(opt.pctAxis?p1(s.data[i]):fmt(s.data[i])+' คน')}</b></div>`).join('')+(opt.tipExtra?opt.tipExtra(i):''));});
   hit.addEventListener('mouseleave',()=>{cross.setAttribute('visibility','hidden');hideTip();});
   if(opt.onClick) hit.addEventListener('click',ev=>opt.onClick(idxAt(ev)));
 }
@@ -489,7 +603,7 @@ function hbarList(host,items,opt={}){ // items: {label,v,tip,onClick}
   host.innerHTML='<div style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) auto;gap:6px 10px;align-items:center;font-size:13.5px">'+
     items.map((it,k)=>`<div data-k="${k}" style="cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(it.label)}">${esc(it.label)}</div>
     <div data-k="${k}"><div class="bar" style="width:${it.v/max*100}%;height:10px"></div></div>
-    <div class="n" style="text-align:right;font-variant-numeric:tabular-nums">${fmt(it.v)}</div>`).join('')+'</div>';
+    <div class="n" style="text-align:right;font-variant-numeric:tabular-nums">${fmt(it.v)} คน</div>`).join('')+'</div>';
   host.querySelectorAll('[data-k]').forEach(el=>{const it=items[+el.dataset.k];
     el.addEventListener('mousemove',ev=>showTip(ev,it.tip));el.addEventListener('mouseleave',hideTip);
     el.addEventListener('click',()=>{hideTip();it.onClick&&it.onClick();});});
@@ -545,13 +659,15 @@ function renderOverview(){
     const cm=S.months.filter(m=>fyOf(m)==cur);
     const pm=S.months.filter(m=>fyOf(m)==prv&&cm.some(c=>c.m===m.m));
     const ce=cm.filter(m=>pm.some(p=>p.m===m.m)).reduce((s,m)=>s+m.E,0);
-    if(pm.length){const pe=pm.reduce((s,m)=>s+m.E,0);
-      fyHtml=`<div class="kpi"><div class="l">ปีงบ ${cur} เทียบเดือนเดียวกันของปีงบ ${prv}</div><div class="v">${fmt(ce)}</div><div class="d">${pm.map(m=>TH_S[m.m-1]).join(' ')} · ปีก่อน ${fmt(pe)} คน ${delta(ce,pe)}</div></div>`;}
+    const pe=pm.reduce((s,m)=>s+m.E,0), cTot=cm.reduce((s,m)=>s+m.E,0);
+    const cmM=cm.filter(m=>pm.some(p=>p.m===m.m)), rng=x=>x.length?(x.length>1?`${mLabel(x[0])} – ${mLabel(x.at(-1))}`:mLabel(x[0])):'';
+    fyHtml=`<div class="kpi"><div class="l">ผู้สมัครทั้งปีงบประมาณ ${cur}</div><div class="v">${fmt(cTot)}<span class="u">คน</span></div><div class="d">${rng(cm)} (${cm.length} เดือน)</div></div>`;
+    if(pm.length) fyHtml+=`<div class="kpi"><div class="l">${rng(cmM)} เทียบช่วงเดียวกันปีก่อน</div><div class="v">${fmt(ce)}<span class="u">คน</span></div><div class="d">${rng(pm)}: ${fmt(pe)} คน ${delta(ce,pe)}</div></div>`;
   }
   $('#ovKpis').innerHTML=`
-    <div class="kpi"><div class="l">ผู้สมัครเรียนรวม</div><div class="v">${fmt(E)}</div><div class="d">เฉลี่ย ${fmt(Math.round(E/ms.length))} คน/เดือน</div></div>
-    <div class="kpi"><div class="l">ผู้เรียนจบหลักสูตรรวม</div><div class="v">${fmt(C)}</div><div class="d">เฉลี่ย ${fmt(Math.round(C/ms.length))} คน/เดือน</div></div>
-    <div class="kpi"><div class="l">อัตราเรียนจบเฉลี่ย</div><div class="v">${p1(pct(C,E))}</div><div class="d">จาก ${ag.length} บทเรียน · ${ms.length} เดือน</div></div>
+    <div class="kpi"><div class="l">ผู้สมัครเรียนรวม</div><div class="v">${fmt(E)}<span class="u">คน</span></div><div class="d">เฉลี่ย ${fmt(Math.round(E/ms.length))} คน/เดือน</div></div>
+    <div class="kpi"><div class="l">ผู้เรียนจบหลักสูตรรวม</div><div class="v">${fmt(C)}<span class="u">คน</span></div><div class="d">เฉลี่ย ${fmt(Math.round(C/ms.length))} คน/เดือน</div></div>
+    <div class="kpi"><div class="l">อัตราเรียนจบเฉลี่ย</div><div class="v">${p1(pct(C,E))}</div><div class="d">จาก ${ag.length} หลักสูตร · ${ms.length} เดือน</div></div>
     <div class="kpi"><div class="l">เดือนที่มีผู้เรียนมากที่สุด / น้อยที่สุด</div><div class="v" style="font-size:20px">${mLabel(best)} · ${mLabel(worst)}</div><div class="d">${fmt(best.E)} คน · ${fmt(worst.E)} คน</div></div>
     ${fyHtml}`;
   const labels=ms.map(m=>mLabel(m)), tl=ms.map(m=>mLabel(m,1));
@@ -578,7 +694,7 @@ function renderCourseSum(){
   rows.sort((a,b)=>{const x=a[s.k],y=b[s.k];return (typeof x==='string'?x.localeCompare(y,'th'):(x??-1)-(y??-1))*s.d;});
   const th=(k,t,n)=>`<th data-k="${k}" class="${n?'n':''}">${t}${s.k===k?(s.d<0?' ▼':' ▲'):''}</th>`;
   const T=rows.reduce((a,r)=>({l:a.l+(r.learners||0),d:a.d+(r.done||0),v:a.v+(r.views||0)}),{l:0,d:0,v:0});
-  $('#courseSum').innerHTML=`<thead><tr><th>#</th>${th('name','หลักสูตร')}${th('learners','ผู้เรียน',1)}${th('done','จบหลักสูตร',1)}${th('r','% จบ',1)}${th('views','การดู',1)}${th('vpl','การดู/คน',1)}${th('materials','เอกสาร',1)}${th('hours','ชั่วโมงใบรับรอง',1)}</tr></thead><tbody>`+
+  $('#courseSum').innerHTML=`<thead><tr><th>#</th>${th('name','หลักสูตร')}${th('learners','ผู้เรียน (คน)',1)}${th('done','จบหลักสูตร (คน)',1)}${th('r','% จบ',1)}${th('views','การดู (ครั้ง)',1)}${th('vpl','การดู/คน (ครั้ง)',1)}${th('materials','เอกสาร (รายการ)',1)}${th('hours','ชั่วโมงใบรับรอง',1)}</tr></thead><tbody>`+
     rows.map((r,k)=>`<tr><td class="n">${k+1}</td><td><a href="#" data-l="${r.id}" style="color:inherit">${esc(r.name)}</a></td><td class="n">${r.learners==null?'–':fmt(r.learners)}</td><td class="n">${r.done==null?'–':fmt(r.done)}</td><td class="n">${p1(r.r)}</td><td class="n">${r.views==null?'–':fmt(r.views)}</td><td class="n">${r.vpl==null?'–':r.vpl.toFixed(1)}</td><td class="n">${r.materials??'–'}</td><td class="n">${esc(r.hours||'–')}</td></tr>`).join('')+
     `<tr style="font-weight:700"><td></td><td>รวม ${rows.length} หลักสูตร</td><td class="n">${fmt(T.l)}</td><td class="n">${fmt(T.d)}</td><td class="n">${p1(pct(T.d,T.l))}</td><td class="n">${fmt(T.v)}</td><td class="n">${(T.v/T.l).toFixed(1)}</td><td></td><td></td></tr></tbody>`;
   $('#courseSum').querySelectorAll('th[data-k]').forEach(t=>t.onclick=()=>{const k=t.dataset.k;state.csort={k,d:s.k===k?-s.d:(k==='name'?1:-1)};renderCourseSum();});
@@ -613,10 +729,10 @@ function renderMonth(){
   $('#mNote').innerHTML=S.kind==='cms'?`ข้อมูล CMS: ผู้เรียนจบนับตามเดือนที่สมัคร ณ วันที่ดึงข้อมูล${isLatest?' — <b>เดือนนี้เป็นเดือนล่าสุด ผู้เรียนบางส่วนยังเรียนไม่จบ อัตราเรียนจบจะสูงขึ้นเมื่อดึงข้อมูลครั้งถัดไป</b>':''}`:'';
   const active=rows.filter(r=>r.e>0).length, zero=rows.filter(r=>r.e===0);
   $('#mKpis').innerHTML=`
-    <div class="kpi"><div class="l">ผู้สมัครเรียน</div><div class="v">${fmt(m.E)}</div><div class="d">${prev?'เทียบเดือนก่อน '+delta(m.E,prev.E):'—'}${yoy?'<br>เทียบ '+mLabel(yoy)+' '+delta(m.E,yoy.E):''}</div></div>
-    <div class="kpi"><div class="l">ผู้เรียนจบหลักสูตร</div><div class="v">${fmt(m.C)}</div><div class="d">${prev?'เทียบเดือนก่อน '+delta(m.C,prev.C):'—'}${yoy?'<br>เทียบ '+mLabel(yoy)+' '+delta(m.C,yoy.C):''}</div></div>
+    <div class="kpi"><div class="l">ผู้สมัครเรียน</div><div class="v">${fmt(m.E)}<span class="u">คน</span></div><div class="d">${prev?'เทียบเดือนก่อน '+delta(m.E,prev.E):'—'}${yoy?'<br>เทียบ '+mLabel(yoy)+' '+delta(m.E,yoy.E):''}</div></div>
+    <div class="kpi"><div class="l">ผู้เรียนจบหลักสูตร</div><div class="v">${fmt(m.C)}<span class="u">คน</span></div><div class="d">${prev?'เทียบเดือนก่อน '+delta(m.C,prev.C):'—'}${yoy?'<br>เทียบ '+mLabel(yoy)+' '+delta(m.C,yoy.C):''}</div></div>
     <div class="kpi"><div class="l">อัตราเรียนจบ</div><div class="v">${p1(rate)}</div><div class="d">${prev?'เดือนก่อน '+p1(pct(prev.C,prev.E)):''}</div></div>
-    <div class="kpi"><div class="l">บทเรียนที่มีผู้เรียน</div><div class="v">${active} / ${rows.length}</div><div class="d">${zero.length?zero.length+' บทเรียนไม่มีผู้สมัคร':'ทุกบทเรียนมีผู้เรียน'}</div></div>`;
+    <div class="kpi"><div class="l">บทเรียนที่มีผู้เรียน</div><div class="v">${active} / ${rows.length}<span class="u">หลักสูตร</span></div><div class="d">${zero.length?zero.length+' บทเรียนไม่มีผู้สมัคร':'ทุกบทเรียนมีผู้เรียน'}</div></div>`;
   // narrative
   const byE=rows.slice().sort((a,b)=>b.e-a.e);
   const top3=byE.slice(0,3), top3share=top3.reduce((s,r)=>s+r.share,0);
@@ -663,7 +779,7 @@ function renderMonthTable(A){
   const sorted=rows.slice().sort((a,b)=>{const x=key[s.k](a),y=key[s.k](b);return (typeof x==='string'?x.localeCompare(y,'th'):x-y)*s.d;});
   const max=Math.max(1,...rows.map(r=>r.e));
   const th=(k,t,n)=>`<th data-k="${k}" class="${n?'n':''}">${t}${s.k===k?(s.d<0?' ▼':' ▲'):''}</th>`;
-  $('#mTable').innerHTML=`<thead><tr><th>#</th>${th('name','บทเรียน')}${th('e','ผู้สมัคร',1)}<th class="barcell noprint"></th>${th('c','เรียนจบ',1)}${th('r','% จบ',1)}${th('share','สัดส่วน',1)}${prev?th('d','เทียบเดือนก่อน',1):''}${th('st','สถานะ')}</tr></thead><tbody>`+
+  $('#mTable').innerHTML=`<thead><tr><th>#</th>${th('name','บทเรียน')}${th('e','ผู้สมัคร (คน)',1)}<th class="barcell noprint"></th>${th('c','เรียนจบ (คน)',1)}${th('r','% จบ',1)}${th('share','สัดส่วน',1)}${prev?th('d','เทียบเดือนก่อน (คน)',1):''}${th('st','สถานะ')}</tr></thead><tbody>`+
     sorted.map((r,k)=>`<tr><td class="n">${k+1}</td><td><a href="#" data-l="${r.id}" style="color:inherit">${esc(lname(r.id))}</a></td><td class="n">${fmt(r.e)}</td>
     <td class="barcell noprint"><div class="bar" style="width:${r.e/max*100}%"></div></td><td class="n">${fmt(r.c)}</td><td class="n">${p1(r.r)}</td><td class="n">${r.share.toFixed(1)}%</td>
     ${prev?`<td class="n">${r.pe==null?'ใหม่':(r.e-r.pe>0?'+':'')+fmt(r.e-r.pe)}</td>`:''}<td><span class="badge ${r.st.cls}">${r.st.t}</span></td></tr>`).join('')+
@@ -687,11 +803,11 @@ function renderLesson(){
   const s3=last3.reduce((s,x)=>s+x.d[0],0),p3=prev3.reduce((s,x)=>s+x.d[0],0);
   const allR=pct(S.months.reduce((s,m)=>s+m.C,0),S.months.reduce((s,m)=>s+m.E,0));
   $('#lKpis').innerHTML=`
-    <div class="kpi"><div class="l">ผู้สมัครเรียนรวม</div><div class="v">${fmt(E)}</div><div class="d">อันดับ ${rank} จาก ${ag.length} บทเรียน</div></div>
-    <div class="kpi"><div class="l">ผู้เรียนจบรวม</div><div class="v">${fmt(C)}</div><div class="d">อัตราเรียนจบ ${p1(pct(C,E))} (ภาพรวม ${p1(allR)})</div></div>
+    <div class="kpi"><div class="l">ผู้สมัครเรียนรวม</div><div class="v">${fmt(E)}<span class="u">คน</span></div><div class="d">อันดับ ${rank} จาก ${ag.length} บทเรียน</div></div>
+    <div class="kpi"><div class="l">ผู้เรียนจบรวม</div><div class="v">${fmt(C)}<span class="u">คน</span></div><div class="d">อัตราเรียนจบ ${p1(pct(C,E))} (ภาพรวม ${p1(allR)})</div></div>
     <div class="kpi"><div class="l">เดือนที่มีผู้เรียนมากที่สุด</div><div class="v" style="font-size:20px">${best?mLabel(best.m,1):'–'}</div><div class="d">${best?fmt(best.d[0])+' คน':''}</div></div>
     <div class="kpi"><div class="l">กลุ่มบทเรียน</div><div class="v" style="font-size:20px">${q?q.t:'–'}</div><div class="d">เทียบกับค่ามัธยฐานทุกบทเรียน</div></div>
-    ${S.extra[id]&&S.extra[id].views!=null?`<div class="kpi"><div class="l">การดูเนื้อหาสะสม (CMS)</div><div class="v">${fmt(S.extra[id].views)}</div><div class="d">${(S.extra[id].views/Math.max(1,S.extra[id].learners)).toFixed(1)} ครั้ง/ผู้เรียน · เอกสาร ${S.extra[id].materials??'–'} รายการ</div></div>`:''}`;
+    ${S.extra[id]&&S.extra[id].views!=null?`<div class="kpi"><div class="l">การดูเนื้อหาสะสม (CMS)</div><div class="v">${fmt(S.extra[id].views)}<span class="u">ครั้ง</span></div><div class="d">${(S.extra[id].views/Math.max(1,S.extra[id].learners)).toFixed(1)} ครั้ง/ผู้เรียน · เอกสาร ${S.extra[id].materials??'–'} รายการ</div></div>`:''}`;
   $('#lTitle').textContent='แนวโน้มรายเดือน: '+lname(id);
   lineChart($('#chLesson'),ms.map(m=>mLabel(m)),[{name:'ผู้สมัครเรียน',color:'var(--s1)',data:data.map(d=>d?d[0]:null)},{name:'ผู้เรียนจบ',color:'var(--s2)',data:data.map(d=>d?d[1]:null)}],
     {tipLabels:ms.map(m=>mLabel(m,1)),tipExtra:i=>data[i]?`<div>อัตราเรียนจบ: <b style="display:inline">${p1(pct(data[i][1],data[i][0]))}</b></div>`:'',onClick:i=>{state.mi=i;showTab('month');}});
@@ -706,7 +822,7 @@ function renderLesson(){
   if(zeros) h+=`<li>มี ${zeros} เดือนที่ไม่มีผู้สมัครเรียนเลย</li>`;
   h+=`<li>มีข้อมูล ${present.length} เดือน เฉลี่ย ${fmt(Math.round(E/Math.max(1,present.length)))} คน/เดือน</li></ul>`;
   $('#lAnalysis').innerHTML=h;
-  $('#lTable').innerHTML=`<thead><tr><th>เดือน</th><th class="n">ผู้สมัคร</th><th class="n">เรียนจบ</th><th class="n">% จบ</th><th class="n">อันดับในเดือน</th></tr></thead><tbody>`+
+  $('#lTable').innerHTML=`<thead><tr><th>เดือน</th><th class="n">ผู้สมัคร (คน)</th><th class="n">เรียนจบ (คน)</th><th class="n">% จบ</th><th class="n">อันดับในเดือน</th></tr></thead><tbody>`+
     present.slice().reverse().map(x=>{const rk=Object.values(x.m.v).filter(v=>v[0]>x.d[0]).length+1;
       return `<tr><td>${mLabel(x.m,1)}</td><td class="n">${fmt(x.d[0])}</td><td class="n">${fmt(x.d[1])}</td><td class="n">${p1(pct(x.d[1],x.d[0]))}</td><td class="n">${rk} / ${Object.keys(x.m.v).length}</td></tr>`;}).join('')+'</tbody>';
 }
@@ -729,7 +845,7 @@ function showTab(t){
   state.tab=t; renderActive(); scrollTo({top:0});
 }
 function openLesson(id){state.lid=id;showTab('lesson');}
-function renderActive(){({overview:renderOverview,month:renderMonth,lesson:renderLesson}[state.tab||'overview']||(()=>{}))();}
+function renderActive(){({overview:renderOverview,month:renderMonth,lesson:renderLesson/*L*/,people:renderPeople/*/L*/}[state.tab||'overview']||(()=>{}))();}
 function renderAll(){renderHeader();renderActive();}
 
 document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
@@ -739,6 +855,13 @@ $('#mPrev').onclick=()=>{state.mi--;renderMonth();};
 $('#mNext').onclick=()=>{state.mi++;renderMonth();};
 $('#lSel').onchange=e=>{state.lid=e.target.value;renderLesson();};
 $('#btnCsv').onclick=exportCsv;
+/*L*/$('#pplCourse').onchange=e=>{pst.course=e.target.value;renderPeople();};
+$('#pplSearch').oninput=e=>{pst.q=e.target.value;renderPeople();};
+$('#pplExport').onclick=exportPeople;
+$('#pplClear').onclick=()=>{PPL=null;renderPeople();};
+$('#bmk2').href='javascript:'+encodeURIComponent(BOOKMARKLET2);
+$('#bmk2').onclick=e=>{e.preventDefault();alert('ให้ลากปุ่มนี้ไปวางบนแถบบุ๊กมาร์ก แล้วไปคลิกใช้ที่หน้า DashBoard ของระบบจัดการ kmlearning');};
+/*/L*/
 $('#btnPrint').onclick=()=>window.print();
 $('#file').onchange=e=>{handleFile(e.target.files[0]);e.target.value='';};
 $('#srcSel').onchange=e=>{useDataset(e.target.value);renderAll();};
